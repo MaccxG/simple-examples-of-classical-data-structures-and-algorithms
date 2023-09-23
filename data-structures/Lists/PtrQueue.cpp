@@ -1,4 +1,4 @@
-// A dinamic queue.
+// A dynamic queue.
 
 #include <iostream>
 
@@ -50,10 +50,13 @@ private:
 	H _dequeue() {
 		if (isEmpty())
 			return -1;
-
+        
+        Node<H> *lastHead = head;
 		H x = head->getKey();
 		head = head->getNext();
 		n--;
+        delete lastHead;
+        
 		return x;
 	}
 
@@ -93,23 +96,23 @@ int main() {
     q.print();
     cout << endl;
     
-    q.enqueue(8);
+    q.enqueue(28);
     q.print();
     cout << endl;
     
-    q.enqueue(3);
-    q.print();
-    cout << endl;
-    
-    q.enqueue(6);
-    q.print();
-    cout << endl;
-
     q.enqueue(2);
     q.print();
     cout << endl;
+    
+    q.enqueue(11);
+    q.print();
+    cout << endl;
 
-    q.enqueue(7);
+    q.enqueue(36);
+    q.print();
+    cout << endl;
+
+    q.enqueue(13);
     q.print();
     cout << endl << endl;
     

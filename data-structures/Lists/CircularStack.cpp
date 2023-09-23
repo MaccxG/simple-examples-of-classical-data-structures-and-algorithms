@@ -13,7 +13,7 @@ private:
 	int n;
 
     bool isEmpty() {
-        if (head == -1) {
+        if (n == 0) {
 			cout << "\n<The Stack is empty>\n";
 			return true;
 		}
@@ -48,6 +48,8 @@ private:
             head = -1;
         else
             head = (head - 1 + capacity) % capacity;
+		
+		n--;
 
         return x;
     }
@@ -56,8 +58,11 @@ private:
 		if (isEmpty())
 			return;
 
-		for (int i = 0; i <= head; i++)
-			cout << "[" << v[i] << "] ";
+		for (int i = head; i >= 0; i--) {
+			cout << "[" << v[i] << "]";
+			if (v[i - 1] != -1 && i - 1 >= 0)
+				cout << " -> ";
+		}
 	}
 
 public:
@@ -86,19 +91,45 @@ int main() {
     s.print();
     cout << endl;
     
-    s.push(8);
+    s.push(28);
     s.print();
     cout << endl;
     
-    s.push(3);
+    s.push(2);
     s.print();
     cout << endl;
     
-    s.push(6);
+    s.push(11);
     s.print();
     cout << endl;
 
-    s.push(2);
+    s.push(36);
+    s.print();
+    cout << endl;
+
+    s.push(13);
+    s.print();
+    cout << endl;
+
+    s.push(24);
+    cout << endl;
+
+    cout << "pop tests:" << endl << endl;
+    int value;
+	value = s.pop();
+	if (value > 0)
+		cout << "pop: [" << value << "]" << endl;
+    s.print();
+    cout << endl;
+
+	value = s.pop();
+	if (value > 0)
+		cout << "pop: [" << value << "]" << endl;
+    s.print();
+    cout << endl << endl;
+
+    cout << "push tests:" << endl << endl;
+    s.push(24);
     s.print();
     cout << endl;
 
@@ -106,11 +137,11 @@ int main() {
     s.print();
     cout << endl;
 
-    s.push(9);
+    s.push(10);
     cout << endl;
 
     cout << "pop tests:" << endl << endl;
-    int n = s.size(), value;
+    int n = s.size();
     for (int i = 0; i < n; i++) {
 		value = s.pop();
 		if (value > 0)

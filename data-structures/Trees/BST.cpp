@@ -63,7 +63,7 @@ private:
 		x->setFather(prev);
 	}
 
-	Node<H> *search(H key, Node<H> *i) {
+	Node<H> *_search(H key, Node<H> *i) {
 		while (i && key != i->getKey()) {
 			if (key <= i->getKey())
 				i = i->getLeft();
@@ -72,29 +72,37 @@ private:
 		}
 		return i;
 	}
+    
+    bool _search(H key) {
+        if (_search(key, root))
+            return true;
+        return false;
+    }
 
 	Node<H> *_min(Node<H> *i) {
 		if (!i)
-			i = new Node<H>(-1); // empty node
-		else
-			while (i->getLeft())
-				i = i->getLeft();
+            return new Node<H>(-1); // empty node
+		
+        while (i->getLeft())
+			i = i->getLeft();
 
 		return i;
 	}
 
 	Node<H> *_max(Node<H> *i) {
 		if (!i)
-			i = new Node<H>(-1); // empty node
-		else
-			while (i->getRight())
-				i = i->getRight();
+            return new Node<H>(-1); // empty node
+		
+        while (i->getRight())
+            i = i->getRight();
 
 		return i;
 	}
 
-	void _deleteNode(Node<H> *x) {
-		if (!x)
+	void _deleteNode(H key) {
+        Node<H> *x = _search(key, root);
+		
+        if (!x)
 			return;
 
 		if (x->getLeft() && x->getRight()) {
@@ -117,9 +125,13 @@ private:
 		}
 		if (y)
 			y->setFather(z);
+
+        delete x;
 	}
 
-	H _predecessor(Node<H> *x) {
+	H _predecessor(H key) {
+        Node<H> *x = _search(key, root);
+
 		if (!x)
 			return -1;
 
@@ -135,7 +147,9 @@ private:
 		return pred->getKey();
 	}
 
-	H _successor(Node<H> *x) {
+	H _successor(H key) {
+        Node<H> *x = _search(key, root);
+
 		if (!x)
 			return -1;
 
@@ -157,14 +171,17 @@ private:
 
 		int leftHeight = _height(i->getLeft());
 		int rightHeight = _height(i->getRight());
+
 		if (leftHeight > rightHeight)
 			return leftHeight + 1;
 		else
 			return rightHeight + 1;
 	}
 
-	int _nodeDepth(Node<H> *i) {
-		if (!i)
+	int _nodeDepth(H key) {
+        Node<H> *i = _search(key, root);
+
+        if (!i)
 			return -1;
 
 		int depth = 0;
@@ -222,13 +239,14 @@ public:
 	}
 
 	void insert(H key) { _insert(key); }
-	void deleteNode(H key) { _deleteNode(search(key, root)); }
+    bool search(H key) {    return _search(key);    }
+	void deleteNode(H key) { _deleteNode(key); }
 	H min() { return _min(root)->getKey(); }
 	H max() { return _max(root)->getKey(); }
-	H predecessor(H key) { return _predecessor(search(key, root)); }
-	H successor(H key) { return _successor(search(key, root)); }
+	H predecessor(H key) { return _predecessor(key); }
+	H successor(H key) { return _successor(key); }
 	int height() { return _height(root); }
-	int nodeDepth(H key) { return _nodeDepth(search(key, root)); }
+	int nodeDepth(H key) { return _nodeDepth(key); }
 	int leafsNumber() { return _leafsNumber(root); }
 	void preorder() { _preorder(root); }
 	void postorder() { _postorder(root); }
@@ -252,14 +270,16 @@ int main() {
     cout << "BST height = " << t.height() << endl << endl;
 
     // test insert
-	t.insert(8);
-	t.insert(5);
-	t.insert(3);
-	t.insert(6);
-	t.insert(10);
+	t.insert(45);
+	t.insert(28);
 	t.insert(13);
-	t.insert(2);
-	t.insert(11);
+	t.insert(36);
+	t.insert(76);
+	t.insert(90);
+	t.insert(4);
+	t.insert(81);
+    t.insert(55);
+    t.insert(63);
 
     // test for visits
 	t.preorder();
@@ -269,45 +289,58 @@ int main() {
 	t.inorder();
     cout << endl <<endl;
 
+    // test search
+    cout << "13: " << t.search(13) << endl;
+    cout << "81: " << t.search(81) << endl;
+    cout << "28: " << t.search(28) << endl;
+    cout << "76: " << t.search(76) << endl;
+    cout << "5: " << t.search(5) << endl << endl;
+    cout << "31: " << t.search(31) << endl << endl;
+
     // test for min and max
     cout << "Min: " << t.min() << endl;
     cout << "Max: " << t.max() << endl << endl;
 
     // test for predecessor and successor
-    cout << "Predecessor of 2 -> " << t.predecessor(2) << endl;
-    cout << "Successor of 2 -> " << t.successor(2) << endl;
-    cout << "Predecessor of 3 -> " << t.predecessor(3) << endl;
-    cout << "Successor of 3 -> " << t.successor(3) << endl;
-    cout << "Predecessor of 5 -> " << t.predecessor(5) << endl;
-    cout << "Successor of 5 -> " << t.successor(5) << endl;
-    cout << "Predecessor of 8 -> " << t.predecessor(8) << endl;
-    cout << "Successor of 8 -> " << t.successor(8) << endl;
+    cout << "Predecessor of 4 -> " << t.predecessor(4) << endl;
+    cout << "Successor of 4 -> " << t.successor(4) << endl;
     cout << "Predecessor of 13 -> " << t.predecessor(13) << endl;
     cout << "Successor of 13 -> " << t.successor(13) << endl;
-    cout << "Predecessor of 15 -> " << t.predecessor(15) << endl;
-    cout << "Successor of 15 -> " << t.successor(15) << endl << endl;
+    cout << "Predecessor of 28 -> " << t.predecessor(28) << endl;
+    cout << "Successor of 28 -> " << t.successor(28) << endl;
+    cout << "Predecessor of 45 -> " << t.predecessor(45) << endl;
+    cout << "Successor of 45 -> " << t.successor(45) << endl;
+    cout << "Predecessor of 63 -> " << t.predecessor(63) << endl;
+    cout << "Successor of 63 -> " << t.successor(63) << endl;
+    cout << "Predecessor of 90 -> " << t.predecessor(90) << endl;
+    cout << "Successor of 90 -> " << t.successor(90) << endl;
+    cout << "Predecessor of 5 -> " << t.predecessor(5) << endl;
+    cout << "Successor of 5 -> " << t.successor(5) << endl;
+    cout << "Predecessor of 31 -> " << t.predecessor(31) << endl;
+    cout << "Successor of 31 -> " << t.successor(31) << endl << endl;
 
     // test for height
     cout << "BST height = " << t.height() << endl << endl;
 
     // test for depth of a node
-    cout << "Depth of 2 -> " << t.nodeDepth(2) << endl;
-    cout << "Depth of 3 -> " << t.nodeDepth(3) << endl;
-    cout << "Depth of 5 -> " << t.nodeDepth(5) << endl;
-    cout << "Depth of 6 -> " << t.nodeDepth(6) << endl;
-    cout << "Depth of 8 -> " << t.nodeDepth(8) << endl;
-    cout << "Depth of 11 -> " << t.nodeDepth(11) << endl;
-    cout << "Depth of 13 -> " << t.nodeDepth(13) << endl << endl;
+    cout << "Depth of 4 = " << t.nodeDepth(4) << endl;
+    cout << "Depth of 13 = " << t.nodeDepth(13) << endl;
+    cout << "Depth of 28 = " << t.nodeDepth(28) << endl;
+    cout << "Depth of 45 = " << t.nodeDepth(45) << endl;
+    cout << "Depth of 55 = " << t.nodeDepth(55) << endl;
+    cout << "Depth of 90 = " << t.nodeDepth(90) << endl;
+    cout << "Depth of 81 = " << t.nodeDepth(81) << endl << endl;
 
     // test for number of leafs
     cout << "Number of leafs = " << t.leafsNumber() << endl << endl;
 
     // test for deleting some nodes
-    t.deleteNode(2);
-    t.deleteNode(10);
-    t.deleteNode(5);
-    t.deleteNode(8);
-    t.deleteNode(15);
+    t.deleteNode(4);
+    t.deleteNode(90);
+    t.deleteNode(28);
+    t.deleteNode(45);
+    t.deleteNode(76);
+    t.deleteNode(63);
 
     t.preorder();
     cout << endl;
@@ -315,6 +348,14 @@ int main() {
     cout << endl;
     t.inorder();
     cout << endl << endl;
+
+    // test search after deleted some nodes
+    cout << "4: " << t.search(4) << endl;
+    cout << "90: " << t.search(90) << endl;
+    cout << "28: " << t.search(28) << endl;
+    cout << "45: " << t.search(45) << endl;
+    cout << "76: " << t.search(76) << endl;
+    cout << "63: " << t.search(63) << endl << endl;
 
     // test for min and max after deleted some nodes
     cout << "Min: " << t.min() << endl;
@@ -324,28 +365,34 @@ int main() {
     cout << "BST height = " << t.height() << endl << endl;
 
     // test for depth of a node after deleted some nodes
-    cout << "Depth of 2 -> " << t.nodeDepth(2) << endl;
-    cout << "Depth of 3 -> " << t.nodeDepth(3) << endl;
-    cout << "Depth of 5 -> " << t.nodeDepth(5) << endl;
-    cout << "Depth of 6 -> " << t.nodeDepth(6) << endl;
-    cout << "Depth of 8 -> " << t.nodeDepth(8) << endl;
-    cout << "Depth of 11 -> " << t.nodeDepth(11) << endl;
-    cout << "Depth of 13 -> " << t.nodeDepth(13) << endl << endl;
+    cout << "Depth of 4 = " << t.nodeDepth(4) << endl;
+    cout << "Depth of 13 = " << t.nodeDepth(13) << endl;
+    cout << "Depth of 28 = " << t.nodeDepth(28) << endl;
+    cout << "Depth of 45 = " << t.nodeDepth(45) << endl;
+    cout << "Depth of 55 = " << t.nodeDepth(55) << endl;
+    cout << "Depth of 90 = " << t.nodeDepth(90) << endl;
+    cout << "Depth of 81 = " << t.nodeDepth(81) << endl << endl;
 
     // test for number of leafs after deleted some nodes
     cout << "Number of leafs = " << t.leafsNumber() << endl;
 
     // test for deleting all other nodes
-    t.deleteNode(6);
-    t.deleteNode(11);
     t.deleteNode(13);
-    t.deleteNode(3);
+    t.deleteNode(36);
+    t.deleteNode(81);
+    t.deleteNode(55);
 
     // test visits after deleted all nodes
-	t.preorder();
-	t.postorder();
-	t.inorder();
-	cout << endl;
+    t.preorder();
+    t.postorder();
+    t.inorder();
+    cout << endl;
+
+    // test search after deleted all nodes
+    cout << "13: " << t.search(13) << endl;
+    cout << "36: " << t.search(36) << endl;
+    cout << "81: " << t.search(81) << endl;
+    cout << "55: " << t.search(55) << endl << endl;
 
     // test for min and max after deleted all nodes
     cout << "Min: " << t.min() << endl;

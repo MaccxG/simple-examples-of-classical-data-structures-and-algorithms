@@ -13,7 +13,7 @@ private:
 	int n;
 
     bool isEmpty() {
-        if (head == -1) {
+        if (n == 0) {
 			cout << "\n<The queue is empty>\n";
 			return true;
 		}
@@ -34,7 +34,9 @@ private:
 
         if (head == -1)
             head = 0;
-
+        if (tail == capacity - 1)
+            tail = -1;
+        
         tail = (tail + 1) % capacity;
         v[tail] = key;
 		n++;
@@ -63,8 +65,28 @@ private:
 		if(isEmpty())
 			return;
 
-		for (int i = head; i <= tail; i++)
-			cout << "[" << v[i] << "] ";
+        int limit;
+        if (head <= tail)
+            limit = tail;
+        else
+            limit = capacity - 1;
+
+        // print the elements in front of the head
+        for (int i = head; i <= limit; i++) {
+            cout << "[" << v[i] << "]";
+            if (i + 1 <= limit)
+                cout << " <- ";
+        }
+
+        // prints the elements left behind the head
+        if (tail < head) {
+            cout << " <- ";  
+            for (int i = 0; i <= tail; i++) {
+                cout << "[" << v[i] << "]";
+                if (i + 1 <= tail)
+                    cout << " <- ";                
+            }
+        }
 	}
 
 public:
@@ -86,26 +108,53 @@ int main() {
     Queue<int> q(6);
 
     q.print();
-    cout << endl;
+	q.dequeue();
+	cout << endl;
 
     cout << "enqueue tests:" << endl << endl;
     q.enqueue(5);
     q.print();
     cout << endl;
     
-    q.enqueue(8);
+    q.enqueue(28);
     q.print();
     cout << endl;
     
-    q.enqueue(3);
+    q.enqueue(2);
     q.print();
     cout << endl;
     
-    q.enqueue(6);
+    q.enqueue(11);
     q.print();
     cout << endl;
 
-    q.enqueue(2);
+    q.enqueue(36);
+    q.print();
+    cout << endl;
+
+    q.enqueue(13);
+    q.print();
+    cout << endl;
+
+    q.enqueue(24);
+    cout << endl;
+
+    cout << "dequeue tests:" << endl << endl;
+    int value;
+	value = q.dequeue();
+	if (value > 0)
+		cout << "dequeue: [" << value << "]" << endl;
+    q.print();
+    cout << endl;
+
+	value = q.dequeue();
+	if (value > 0)
+		cout << "dequeue: [" << value << "]" << endl;
+    q.print();
+    cout << endl << endl;
+
+    cout << "enqueue tests:" << endl << endl;
+    q.enqueue(24);
     q.print();
     cout << endl;
 
@@ -113,11 +162,11 @@ int main() {
     q.print();
     cout << endl;
 
-    q.enqueue(9);
+    q.enqueue(10);
     cout << endl;
 
     cout << "dequeue tests:" << endl << endl;
-    int n = q.size(), value;
+    int n = q.size();
     for (int i = 0; i < n; i++) {
 		value = q.dequeue();
 		if (value > 0)

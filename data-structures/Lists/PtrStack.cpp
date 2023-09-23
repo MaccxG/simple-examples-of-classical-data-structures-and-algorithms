@@ -1,4 +1,4 @@
-// A dinamic stack.
+// A dynamic stack.
 
 #include <iostream>
 
@@ -47,9 +47,12 @@ private:
         if (isEmpty())
 			return -1;
 
+        Node<H> *lastHead = head;
 		H x = head->getKey();
         head = head->getNext();
 		n--;
+        delete lastHead;
+        
 		return x;
     }
 
@@ -84,32 +87,32 @@ int main() {
     s.print();
     cout << endl;
 
-    cout << "Push tests:" <<endl;
+    cout << "Push tests:" << endl << endl;
     s.push(5);
     s.print();
     cout << endl;
     
-    s.push(8);
+    s.push(28);
     s.print();
     cout << endl;
     
-    s.push(3);
-    s.print();
-    cout << endl;
-    
-    s.push(6);
-    s.print();
-    cout << endl;
-
     s.push(2);
     s.print();
     cout << endl;
+    
+    s.push(11);
+    s.print();
+    cout << endl;
 
-    s.push(7);
+    s.push(36);
+    s.print();
+    cout << endl;
+
+    s.push(13);
     s.print();
     cout << endl << endl;
 
-    cout << "Pop tests:" << endl;
+    cout << "Pop tests:" << endl << endl;
     int n = s.size(), value;
     for (int i = 0; i < n; i++) {
 		value = s.pop();
